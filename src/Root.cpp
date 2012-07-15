@@ -362,22 +362,19 @@ bool Root::init(FileString homeDirectory, FileString subprocessDirectory, unsign
     mErrorHandler = 0;
 
 #if defined(OS_LINUX)
-    if (!g_thread_supported ()) // the client application might have already setup glib
-	{
-		g_thread_init(NULL);
-		// Glib type system initialization. Needed at least for gconf,
-		// used in net/proxy/proxy_config_service_linux.cc. Most likely
-		// this is superfluous as gtk_init() ought to do this. It's
-		// definitely harmless, so retained as a reminder of this
-		// requirement for gconf.
-		g_type_init();
-		// gtk_init() can change |argc| and |argv|.
-		char argv0data[] = "[Berkelium]";
-		char *argv0 = argv0data;
-		char **argv = &argv0;
-		int argc = 1;
-		gtk_init(&argc, &argv);
-    }
+
+/* Tested on new ubuntu (12.04 64bit). With the following if statement, the gtk doesn't get initialized, and everything later goes to hell */
+//if (!g_thread_supported ()) // the client application might have already setup glib
+//{
+	g_thread_init(NULL);
+	g_type_init();
+	// gtk_init() can change |argc| and |argv|.
+	char argv0data[] = "[Berkelium]";
+	char *argv0 = argv0data;
+	char **argv = &argv0;
+	int argc = 1;
+	gtk_init(&argc, &argv);
+//}    
     SetUpGLibLogHandler();
 #endif
 
